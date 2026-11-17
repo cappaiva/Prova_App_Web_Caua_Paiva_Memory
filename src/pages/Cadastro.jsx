@@ -1,16 +1,19 @@
-import { useState } from "react";
+import {useState} from "react";
+
 export default function Cadastro() {
     const [form, setForm] = useState({
-        nome: "", email: "", senha: "", confirmar: "" , conheceu: ""
+        nome: "", email: "", senha: "", confirmar: "", conheceu: ""
     });
     const [erros, setErros] = useState({});
     const [sucesso, setSucesso] = useState("");
+
     function alterar(evento) {
-        const { name, value } = evento.target;
-        setForm((anterior) => ({ ...anterior, [name]: value }));
-        setErros((anterior) => ({ ...anterior, [name]: "" }));
+        const {name, value} = evento.target;
+        setForm((anterior) => ({...anterior, [name]: value}));
+        setErros((anterior) => ({...anterior, [name]: ""}));
         setSucesso("");
     }
+
     function validar() {
         const novosErros = {};
         if (form.nome.trim().length < 3) {
@@ -26,8 +29,12 @@ export default function Cadastro() {
         if (form.confirmar !== form.senha || !form.confirmar) {
             novosErros.confirmar = "As senhas devem ser iguais.";
         }
+        if (!form.conheceu) {
+            novosErros.conheceu = "Selecione como você conheceu o portal.";
+        }
         return novosErros;
     }
+
     function enviar(evento) {
         evento.preventDefault();
         const novosErros = validar();
@@ -35,9 +42,10 @@ export default function Cadastro() {
         if (Object.keys(novosErros).length === 0) {
             setSucesso(`Cadastro simulado realizado para
 ${form.nome.trim()}!`);
-            setForm({ nome: "", email: "", senha: "", confirmar: "" });
+            setForm({nome: "", email: "", senha: "", confirmar: "", conheceu: ""});
         }
     }
+
     return (
         <section>
             <h1>Cadastro de usuário</h1>
@@ -46,35 +54,40 @@ ${form.nome.trim()}!`);
                 <label htmlFor="nome">Nome completo</label>
                 <input id="nome" name="nome" value={form.nome}
                        onChange={alterar} aria-invalid={!!erros.nome}
-                       aria-describedby={erros.nome ? "erro-nome" : undefined} />
+                       aria-describedby={erros.nome ? "erro-nome" : undefined}/>
                 {erros.nome && <small id="erro-nome"
                                       className="erro">{erros.nome}</small>}
                 <label htmlFor="email">E-mail</label>
                 <input id="email" name="email" type="email" value={form.email}
                        onChange={alterar} aria-invalid={!!erros.email}
-                       aria-describedby={erros.email ? "erro-email" : undefined} />
+                       aria-describedby={erros.email ? "erro-email" : undefined}/>
                 {erros.email && <small id="erro-email"
                                        className="erro">{erros.email}</small>}
                 <label htmlFor="senha">Senha</label>
                 <input id="senha" name="senha" type="password"
                        value={form.senha}
                        onChange={alterar} aria-invalid={!!erros.senha}
-                       aria-describedby={erros.senha ? "erro-senha" : undefined} />
+                       aria-describedby={erros.senha ? "erro-senha" : undefined}/>
                 {erros.senha && <small id="erro-senha"
                                        className="erro">{erros.senha}</small>}
                 <label htmlFor={"interesse"}>Onde conheceu o memory?</label>
-                <select id="interesse" name="conheceu" value={form.conheceu} onChange={alterar} required>
-                    <option selected disabled>Selecione uma opção</option>
-                    <option>Por professores</option>
-                    <option>Recomendação de amigos</option>
-                    <option>Redes sociais</option>
+                <label htmlFor="conheceu">Como você conheceu o portal?</label>
+                <select id="conheceu" name="conheceu" value={form.conheceu}
+                        onChange={alterar} aria-invalid={!!erros.conheceu}
+                        aria-describedby={erros.conheceu ? "erro-conheceu" : undefined}>
+                    <option value="">Selecione uma opção</option>
+                    <option value="Por professores">Por professores</option>
+                    <option value="Recomendação de amigos">Recomendação de amigos</option>
+                    <option value="Redes sociais">Redes sociais</option>
                 </select>
+                {erros.conheceu && <small id="erro-conheceu"
+                                          className="erro">{erros.conheceu}</small>}
                 <label htmlFor="confirmar">Confirmar senha</label>
                 <input id="confirmar" name="confirmar" type="password"
                        value={form.confirmar} onChange={alterar}
                        aria-invalid={!!erros.confirmar}
                        aria-describedby={erros.confirmar ? "erro-confirmar" :
-                           undefined} />
+                           undefined}/>
                 {erros.confirmar && <small id="erro-confirmar"
                                            className="erro">{erros.confirmar}</small>}
                 <button type="submit">Cadastrar</button>
